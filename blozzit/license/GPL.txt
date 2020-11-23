@@ -1,3 +1,0 @@
-PHP code is distributed under the GNU General Public License
-
-http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
