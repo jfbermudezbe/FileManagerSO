@@ -1,4 +1,13 @@
-<?php session_start(); ?> 
+<?php 
+
+session_start(); 
+
+$currentFolder = "";
+if(isset($_GET['currentFolder'])){
+    $currentFolder = $_GET['currentFolder'];
+}
+
+?> 
 
 
 <!DOCTYPE html>
@@ -19,11 +28,12 @@
 
         <div class="mx-auto" style="width: 80%;">
             <button id="crearCarpeta" class="btn btn-success">Crear carpeta</button>
-            <button class="btn btn-warning">Crear archivo</button>
+            <button id="crearArchivo" class="btn btn-warning">Crear archivo</button>
         </div>
     
-    
     </div>
+
+    
     
 <script>
 $('#crearCarpeta').on('click',function() {
@@ -33,6 +43,16 @@ $('#crearCarpeta').on('click',function() {
     showCancelButton: false,
     showConfirmButton: false
 })})
+
+$('#crearArchivo').on('click', function(){
+    var currentUrl = "<?php echo $currentFolder ?>";
+    Swal.fire({
+        title:"Ingrese el nombre del archivo que desea crear",
+        html:"<form action='crearArchivo.php' method='GET'><div class='form-group'><input type='hidden' name='carpetaActual' value='" + currentUrl + "'><input type='text' class='form-control' name='nombreArchivo'></div><small id='crearCarpetaComment' class='form-text text-muted'>Evita usar puntos o caracteres especiales.</small><br><input type='submit' class='btn btn-primary' value='CREAR'></form>",
+        showCancelButton: false,
+        showConfirmButton: false
+    })
+})
 </script>
 
 
@@ -48,7 +68,7 @@ if(isset($_SESSION['error'])){?>
         Swal.fire("Muy bien!", "<?php echo $_SESSION['success']; ?>", "success")
     </script>
 <?php 
-unset($_SESSION['success']);
+    unset($_SESSION['success']);
 } ?>
 
 

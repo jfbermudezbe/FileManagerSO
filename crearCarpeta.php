@@ -3,9 +3,15 @@
 session_start();
 
 if(isset($_GET['nombreCarpeta'])){
-    //shell_exec("mkdir D:/xampp/htdocs/FileManagerSO/projectFolder/" . $_GET['nombreCarpeta']);
-    if(! file_exists($_GET['nombreCarpeta'])){
-        mkdir("D:/xampp/htdocs/FileManagerSO/projectFolder/" . $_GET['nombreCarpeta'], 0777, true);
+
+    if( strlen($_GET['nombreCarpeta']) == 0 ){
+        $_SESSION['error'] = "Por favor ingrese un nombre para la carpeta";
+        header( "Location: index.php" );
+        return;
+    }
+
+    if(! file_exists("./projectFolder/" . $_GET['nombreCarpeta'])){
+        mkdir("./projectFolder/" . $_GET['nombreCarpeta'], 0777, true);
         $_SESSION['success'] = "La carpeta se ha creado correctamente.";
         header('Location: index.php');
         return;
@@ -14,5 +20,10 @@ if(isset($_GET['nombreCarpeta'])){
         header('Location: index.php');
         return;
     }
+
+}else {
+    $_SESSION['error'] = "Por favor ingrese un nombre para la carpeta";
+    header( "Location: index.php" );
+    return;
 }
 ?>
