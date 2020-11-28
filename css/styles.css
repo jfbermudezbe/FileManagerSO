@@ -1,0 +1,113 @@
+/* Layout */
+
+.content {
+    width: 100%;
+    /*height: 100vh;*/
+}
+
+.welcomeTitle {
+    text-align: center;
+}
+
+/* Fonts */
+
+.r-font {
+    font-family: "righteous";
+}
+
+/* Navbar */
+
+.fa-folder-plus {
+    color: #ffd05b;
+}
+
+.nav-color {
+    color: black;
+    background-color: white;
+    box-shadow: 0 1px 5px #324a5e;
+}
+
+.nav-color a {
+    color: #324a5e;
+}
+
+.nav-btn {
+    padding: 0;
+    margin: 0 0 0 10px;
+    background-color: transparent;
+    box-shadow: 0;
+    color: #324a5e;
+}
+
+.nav-btn:hover {
+    background-color: #eeeeee;
+    border-radius: 10px;
+}
+
+/* File manager */
+
+.object {
+    margin: 5px;
+}
+
+.object:hover {
+    cursor: pointer;
+    background-color: #eeeeee99;
+    border-radius: 10px;
+}
+
+.object:active {
+    cursor: pointer;
+    background-color: #eeeeee;
+    border-radius: 10px;
+}
+
+.object-folder i {
+    font-size: 8em;
+    color: #ffd05b;
+}
+
+.object-file i {
+    font-size: 8em;
+    color: #324a5e;
+}
+
+.object p {
+    width: 100%;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    text-transform: capitalize;
+}
+
+/* Right click menu */
+
+#menu {
+    padding: 5px 0;
+    z-index: 100;
+    position: absolute;
+    display: none;
+    left: 0px;
+    top: 0px;
+    height: auto;
+    width: auto;
+    box-shadow: 0 0 10px 0 #55555555;
+    border-radius: 5px;
+    background-color: white;
+}
+
+#menu div {
+    padding: 5px 15px 5px 5px;
+}
+
+#menu i {
+    color: #777777;
+    margin: 0 5px;
+    font-size: 18px;
+}
+
+#menu div:hover {
+    cursor: pointer;
+    background-color: #eeeeee;
+}
