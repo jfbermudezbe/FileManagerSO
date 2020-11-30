@@ -1,14 +1,30 @@
 <?php
-
 session_start();
+//session_destroy();
+$currentPath = "./projectFolder";
+$fakePath = [];
+if (isset($_SESSION['path'])) {
+    foreach ($_SESSION['path'] as $key) {
+        $currentPath = $currentPath . '/' . $key;
+        array_push($fakePath, $key);
+    }
+} else {
+    $_SESSION['path'] = [];
+}
 
-$currentFolder = "";
-if (isset($_GET['currentFolder'])) {
-    $currentFolder = $_GET['currentFolder'];
+function sortedDir($dir)
+{
+    $sortedData = array();
+    foreach (scandir($dir) as $file) {
+        if (is_file($dir . '/' . $file))
+            array_push($sortedData, $file);
+        else
+            array_unshift($sortedData, $file);
+    }
+    return $sortedData;
 }
 
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -36,20 +52,21 @@ if (isset($_GET['currentFolder'])) {
 <body>
     <!-- Menu click derecho -->
     <div id="menu" class="menu row m-0">
-        <div id="item-menu" class="col-12">
-            <i id="icon-menu" class="fas fa-pencil fa-fw"></i> Renombrar
+        <input type="hidden" value="" class="col-12">
+        <div class="col-12" id="renombrar">
+            <i class="fas fa-pencil fa-fw"></i> Renombrar
         </div>
-        <div id="item-menu" class="col-12">
-            <i id="icon-menu" class="fas fa-trash fa-fw"></i> Eliminar
+        <div class="col-12" id="eliminar">
+            <i class="fas fa-trash fa-fw"></i> Eliminar
         </div>
     </div>
 
     <!-- Navbar -->
     <nav class="navbar nav-color">
         <a class="navbar-brand r-font" href="/">
-            <img src="img/favicon.png" width="30" height="30" class="d-inline-block align-top" alt="">
             FileExSO
         </a>
+        <img src="img/favicon.png" width="40" height="40" class="d-inline-block align-top" alt="">
         <div class="row m-0">
             <button class="btn nav-btn" id="crearCarpeta">
                 <i class="fas fa-folder-plus fa-fw fa-2x"></i>
@@ -60,29 +77,63 @@ if (isset($_GET['currentFolder'])) {
         </div>
     </nav>
 
+    <!-- Navegacion entre directorios -->
+    <div class="mt-3 row m-0">
+        <button class="btn nav-btn" id="irAtras" style="border-radius: 50px;">
+            <i class="fas fa-arrow-circle-left fa-fw fa-2x"></i>
+        </button>
+        <div class="total-path row m-0">
+            <div class="current-path r-font">
+                FileExeSO
+            </div>
+            <?php foreach ($fakePath as $key) {
+                echo '
+            <div class="divider r-font">/</div>
+            <div class="current-path r-font">
+                ' . $key . '
+            </div>';
+            }; ?>
+        </div>
+    </div>
+
     <!-- Navegador de archivos-->
     <div class="content row m-0 mt-3" id="notepad">
         <?php
-        $directory = './projectFolder';
-        $row = array_diff(scandir($directory), array('..', '.'));
-        foreach ($row as $i) {
-            if (is_file($directory . '/' . $i)) {
+        $directory = $currentPath;
+        $row = array_diff(sortedDir($directory), array('..', '.'));
+        if (count($row) > 0) {
+            foreach ($row as $i) {
+                if (is_file($directory . '/' . $i)) {
         ?>
-                <div class="object object-file col-6 col-sm-3 col-lg-2 row m-0">
-                    <i class="fas fa-file fa-fw col-12"></i>
-                    <p class="col-12 text-center"><?php echo $i ?></p>
-                </div>
+                    <div class="object object-file col-6 col-sm-3 col-lg-2" id="<?php echo $i ?>">
+                        <form action="navegar.php" method="GET" class="row m-0">
+                            <i class="fas fa-file fa-fw col-12"></i>
+                            <p class="col-12 text-center"><?php echo $i ?></p>
+                            <input type="hidden" name="nameFile" value="<?php echo $i ?>">
+                        </form>
+                    </div>
+                <?php
+                } else {
+                ?>
+                    <div class="object object-folder col-6 col-sm-3 col-lg-2" id="<?php echo $i ?>">
+                        <form action="navegar.php" method="GET" class="row m-0">
+                            <i class="fas fa-folder fa-fw col-12"></i>
+                            <p class="col-12 text-center"><?php echo $i ?></p>
+                            <input type="hidden" name="nameFolder" value="<?php echo $i ?>">
+                        </form>
+                    </div>
             <?php
-            } else {
-            ?>
-                <div class="object object-folder col-6 col-sm-3 col-lg-2 row m-0">
-                    <i class="fas fa-folder fa-fw col-12"></i>
-                    <p class="col-12 text-center"><?php echo $i ?></p>
-                </div>
-
-        <?php
+                }
             }
+        } else {
+            ?>
+            <div class="col-12">
+                <i class="fas fa-folder-open fa-fw fa-3x text-muted text-center w-100"></i>
+                <p class="r-font text-muted text-center">Carpeta vacía.</p>
+            </div>
+        <?php
         }
+
         ?>
     </div>
 
@@ -92,20 +143,65 @@ if (isset($_GET['currentFolder'])) {
         $('#crearCarpeta').on('click', function() {
             Swal.fire({
                 title: "Ingrese el nombre de la carpeta que desea crear",
-                html: "<form action='crearCarpeta.php' method='GET'><div class='form-group'><input type='text' class='form-control' name='nombreCarpeta'></div><small id='crearCarpetaComment' class='form-text text-muted'>Evita usar puntos o caracteres especiales.</small><br><input type='submit' class='btn btn-primary' value='CREAR'></form>",
+                html: `
+                <form action='crearCarpeta.php' method='GET'>
+                    <div class='form-group'>
+                        <input type='text' class='form-control' name='nombreCarpeta'>
+                    </div>
+                    <small id='crearCarpetaComment' class='form-text text-muted'>
+                        Evita usar puntos o caracteres especiales.
+                    </small>
+                    <br>
+                    <input type='submit' class='btn btn-primary' value='CREAR'>
+                </form>`,
                 showCancelButton: false,
                 showConfirmButton: false
             })
         })
 
         $('#crearArchivo').on('click', function() {
-            var currentUrl = "<?php echo $currentFolder ?>";
+            var currentUrl = "<?php echo $currentPath ?>";
             Swal.fire({
                 title: "Ingrese el nombre del archivo que desea crear",
-                html: "<form action='crearArchivo.php' method='GET'><div class='form-group'><input type='hidden' name='carpetaActual' value='" + currentUrl + "'><input type='text' class='form-control' name='nombreArchivo'></div><small id='crearCarpetaComment' class='form-text text-muted'>Evita usar puntos o caracteres especiales.</small><br><input type='submit' class='btn btn-primary' value='CREAR'></form>",
+                html: `
+                <form action='crearArchivo.php' method='GET'>
+                    <div class='form-group'>
+                        <input type='hidden' name='carpetaActual' value='${currentUrl}'>
+                        <input type='text' class='form-control' name='nombreArchivo'>
+                    </div>
+                    <small id='crearCarpetaComment' class='form-text text-muted'>
+                        Evita usar puntos o caracteres especiales.
+                    </small>
+                    <br>
+                    <input type='submit' class='btn btn-primary' value='CREAR'>
+                </form>`,
                 showCancelButton: false,
                 showConfirmButton: false
             })
+        })
+
+        $('.object.object-folder').click((e) => {
+            const objectID = e.currentTarget.id;
+            $(`.object#${objectID} form`).submit()
+        })
+
+        $('#irAtras').click(() => {
+            $.ajax({
+                type: 'POST',
+                url: 'irAtras.php',
+                success: (r) => {
+                    let res = JSON.parse(r);
+                    if (res) {
+                        window.location.reload()
+                    } else {
+                        Swal.fire("Oops...", "No puedes ir mas atras.", "error")
+                    }
+                }
+            });
+        })
+
+        $(document).ready(() => {
+            console.log("<?php echo $currentPath; ?>")
         })
     </script>
 
@@ -124,8 +220,6 @@ if (isset($_GET['currentFolder'])) {
     <?php
         unset($_SESSION['success']);
     } ?>
-
-
 </body>
 
 </html>

@@ -1,4 +1,78 @@
-// inicializar tooltips
+// Renombrar
+
+$('#eliminar').click(() => {
+    const fileID = $('#menu input').val()
+    $('#menu').css('display', 'none')
+
+    Swal.fire({
+        title: "¡Cuidado!",
+        text: "¿Esta seguro de eliminar este elemento?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: `Ok`,
+    })
+        .then((val) => {
+            if (val.isConfirmed) {
+                $.ajax({
+                    type: 'POST',
+                    url: 'eliminar.php',
+                    data: { fileID },
+                    success: (r) => {
+                        let res = JSON.parse(r);
+                        if (res) {
+                            Swal.fire("Muy bien!.", "Se eliminó correctamente.", "success")
+                                .then((val) => {
+                                    if (val) window.location.reload()
+                                })
+
+                        } else {
+                            Swal.fire("Oops...", "Hubo un error al eliminar.", "error")
+                        }
+                    }
+                });
+            }
+        })
+})
+
+$('#renombrar').click(() => {
+    const oldName = $('#menu input').val()
+    $('#menu').css('display', 'none')
+
+    Swal.fire({
+        title: 'Renombrar',
+        text: 'Ingrese el nuevo nombre.',
+        input: 'text',
+        inputAttributes: {
+            autocapitalize: 'off'
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Ok',
+        preConfirm: (newName) => {
+            if (newName == "") {
+                return false
+            }
+            return $.ajax({
+                type: 'POST',
+                url: 'renombrar.php',
+                data: { newName, oldName },
+                success: (r) => {
+                    return r
+                }
+            });
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Renombrado correctamente.',
+                icon: 'success'
+            })
+                .then(() => {
+                    window.location.reload();
+                })
+
+        }
+    })
+})
 
 // Abrir menu
 
@@ -7,6 +81,7 @@ $('.object').mousedown((e) => {
         $('#menu').css('display', 'block')
         $('#menu').css('top', mouseY(e) + 'px')
         $('#menu').css('left', mouseX(e) + 'px')
+        $('#menu input').val(e.currentTarget.id)
     }
 })
 
@@ -14,8 +89,8 @@ $('.object').mousedown((e) => {
 
 $(document).click(function (event) {
     let visible = $('#menu').css('display')
-    let id = event.target.id
-    if (visible == "block" && id != "menu" && id != "icon-menu" && id != "item-menu") {
+    let id = event.target.parentElement ? event.target.parentElement.id : event.target.id;
+    if (visible == "block" && id != "menu") {
         $('#menu').css('display', 'none')
     }
 });

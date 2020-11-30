@@ -46,9 +46,22 @@
 
 /* File manager */
 
-.object {
-    margin: 5px;
+.total-path {
+    margin-left: 10px !important;
 }
+
+.current-path {
+    background-color: #eeeeee;
+    padding: 5px 10px 5px 10px;
+    border-radius: 10px;
+}
+
+.divider {
+    padding: 5px 5px 5px 5px;
+    transform: scaleY(2);
+}
+
+.object {}
 
 .object:hover {
     cursor: pointer;
