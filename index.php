@@ -53,11 +53,31 @@ function sortedDir($dir)
     <!-- Menu click derecho -->
     <div id="menu" class="menu row m-0">
         <input type="hidden" value="" class="col-12">
+        <div class="col-12" id="copiar">
+            <i class="fas fa-copy fa-fw"></i> Copiar
+        </div>
+        <div class="col-12" id="cortar">
+            <i class="fas fa-cut fa-fw"></i> Cortar
+        </div>
+        <hr>
         <div class="col-12" id="renombrar">
             <i class="fas fa-pencil fa-fw"></i> Renombrar
         </div>
         <div class="col-12" id="eliminar">
             <i class="fas fa-trash fa-fw"></i> Eliminar
+        </div>
+    </div>
+
+    <div id="menu2" class="menu row m-0">
+        <div class="col-12 disabled" id="pegar">
+            <i class="fas fa-clipboard fa-fw"></i> Pegar
+        </div>
+        <hr>
+        <div class="col-12" id="crearCarpetaMenu">
+            <i class="fas fa-folder-plus fa-fw"></i> Crear carpeta
+        </div>
+        <div class="col-12" id="crearArchivoMenu">
+            <i class="fas fa-file-medical fa-fw"></i> Crear archivo
         </div>
     </div>
 
@@ -79,25 +99,33 @@ function sortedDir($dir)
 
     <!-- Navegacion entre directorios -->
     <div class="mt-3 row m-0">
-        <button class="btn nav-btn" id="irAtras" style="border-radius: 50px;">
-            <i class="fas fa-arrow-circle-left fa-fw fa-2x"></i>
-        </button>
-        <div class="total-path row m-0">
-            <div class="current-path r-font">
-                FileExeSO
-            </div>
-            <?php foreach ($fakePath as $key) {
-                echo '
+        <?php if (!empty($fakePath)) { ?>
+            <button class="btn nav-btn" id="irAtras" style="border-radius: 50px;">
+                <i class="fas fa-arrow-circle-left fa-fw fa-2x"></i>
+            </button>
+            <div class="total-path row m-0">
+                <div class="current-path r-font">
+                    Home
+                </div>
+                <?php foreach ($fakePath as $key) {
+                    echo '
             <div class="divider r-font">/</div>
             <div class="current-path r-font">
                 ' . $key . '
             </div>';
-            }; ?>
-        </div>
+                }; ?>
+            </div>
+        <?php } else { ?>
+            <div class="current-path r-font text-center mx-auto">
+                Home
+            </div>
+        <?php
+        } ?>
+
     </div>
 
     <!-- Navegador de archivos-->
-    <div class="content row m-0 mt-3" id="notepad">
+    <div class="content row m-0 mt-3 align-content-start flex-wrap" id="explorer">
         <?php
         $directory = $currentPath;
         $row = array_diff(sortedDir($directory), array('..', '.'));
@@ -105,22 +133,18 @@ function sortedDir($dir)
             foreach ($row as $i) {
                 if (is_file($directory . '/' . $i)) {
         ?>
-                    <div class="object object-file col-6 col-sm-3 col-lg-2" id="<?php echo $i ?>">
-                        <form action="navegar.php" method="GET" class="row m-0">
-                            <i class="fas fa-file fa-fw col-12"></i>
-                            <p class="col-12 text-center"><?php echo $i ?></p>
-                            <input type="hidden" name="nameFile" value="<?php echo $i ?>">
-                        </form>
+                    <div class="object object-file col-6 col-sm-3 col-lg-2 row m-0" id="<?php echo $i ?>">
+                        <i class="fas fa-file fa-fw col-12"></i>
+                        <p class="col-12 text-center"><?php echo $i ?></p>
+                        <input type="hidden" name="nameFile" value="<?php echo $i ?>">
                     </div>
                 <?php
                 } else {
                 ?>
-                    <div class="object object-folder col-6 col-sm-3 col-lg-2" id="<?php echo $i ?>">
-                        <form action="navegar.php" method="GET" class="row m-0">
-                            <i class="fas fa-folder fa-fw col-12"></i>
-                            <p class="col-12 text-center"><?php echo $i ?></p>
-                            <input type="hidden" name="nameFolder" value="<?php echo $i ?>">
-                        </form>
+                    <div class="object object-folder col-6 col-sm-3 col-lg-2 row m-0" id="<?php echo $i ?>">
+                        <i class="fas fa-folder fa-fw col-12"></i>
+                        <p class="col-12 text-center"><?php echo $i ?></p>
+                        <input type="hidden" name="nameFolder" value="<?php echo $i ?>">
                     </div>
             <?php
                 }
@@ -180,24 +204,44 @@ function sortedDir($dir)
             })
         })
 
-        $('.object.object-folder').click((e) => {
-            const objectID = e.currentTarget.id;
-            $(`.object#${objectID} form`).submit()
+        $('#crearCarpetaMenu').on('click', function() {
+            Swal.fire({
+                title: "Ingrese el nombre de la carpeta que desea crear",
+                html: `
+                <form action='crearCarpeta.php' method='GET'>
+                    <div class='form-group'>
+                        <input type='text' class='form-control' name='nombreCarpeta'>
+                    </div>
+                    <small id='crearCarpetaComment' class='form-text text-muted'>
+                        Evita usar puntos o caracteres especiales.
+                    </small>
+                    <br>
+                    <input type='submit' class='btn btn-primary' value='CREAR'>
+                </form>`,
+                showCancelButton: false,
+                showConfirmButton: false
+            })
         })
 
-        $('#irAtras').click(() => {
-            $.ajax({
-                type: 'POST',
-                url: 'irAtras.php',
-                success: (r) => {
-                    let res = JSON.parse(r);
-                    if (res) {
-                        window.location.reload()
-                    } else {
-                        Swal.fire("Oops...", "No puedes ir mas atras.", "error")
-                    }
-                }
-            });
+        $('#crearArchivoMenu').on('click', function() {
+            var currentUrl = "<?php echo $currentPath ?>";
+            Swal.fire({
+                title: "Ingrese el nombre del archivo que desea crear",
+                html: `
+                <form action='crearArchivo.php' method='GET'>
+                    <div class='form-group'>
+                        <input type='hidden' name='carpetaActual' value='${currentUrl}'>
+                        <input type='text' class='form-control' name='nombreArchivo'>
+                    </div>
+                    <small id='crearCarpetaComment' class='form-text text-muted'>
+                        Evita usar puntos o caracteres especiales.
+                    </small>
+                    <br>
+                    <input type='submit' class='btn btn-primary' value='CREAR'>
+                </form>`,
+                showCancelButton: false,
+                showConfirmButton: false
+            })
         })
 
         $(document).ready(() => {

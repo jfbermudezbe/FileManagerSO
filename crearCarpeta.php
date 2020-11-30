@@ -13,12 +13,12 @@ if(isset($_GET['nombreCarpeta'])){
     $path = '';
     if (isset($_SESSION['path'])) {
         foreach ($_SESSION['path'] as $key) {
-            $path = $path . '/' . $key;
+            $path = $path . '\\' . $key;
         }
     }
 
     if(!file_exists("./projectFolder" . $path . '/' . $_GET['nombreCarpeta'])){
-        mkdir("./projectFolder" . $path . '/' . $_GET['nombreCarpeta'], 0777, true);
+        exec("mkdir .\projectFolder" . $path . '\\' . $_GET['nombreCarpeta']);//, 0777, true);
         $_SESSION['success'] = "La carpeta se ha creado correctamente.";
         header('Location: index.php');
         return;

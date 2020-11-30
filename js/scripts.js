@@ -1,4 +1,4 @@
-// Renombrar
+// Funciones especiales
 
 $('#eliminar').click(() => {
     const fileID = $('#menu input').val()
@@ -61,7 +61,8 @@ $('#renombrar').click(() => {
             });
         }
     }).then((result) => {
-        if (result.isConfirmed) {
+        console.log(result)
+        if (result.value == true) {
             Swal.fire({
                 title: 'Renombrado correctamente.',
                 icon: 'success'
@@ -69,30 +70,88 @@ $('#renombrar').click(() => {
                 .then(() => {
                     window.location.reload();
                 })
-
+        }
+        else {
+            Swal.fire({
+                title: 'Oops.',
+                text: 'Ocurrió un error inesperado.',
+                icon: 'error'
+            })
         }
     })
+})
+
+
+// Navegación
+
+$('.object.object-folder').click((e) => {
+    const nameFolder = e.currentTarget.id;
+    $.ajax({
+        type: 'POST',
+        data: { nameFolder },
+        url: 'navegar.php',
+        success: (r) => {
+            let res = JSON.parse(r);
+            if (res) {
+                window.location.reload()
+            } else {
+                Swal.fire("Oops...", "A ocurrido un error inesperado.", "error")
+            }
+        }
+    })
+})
+
+$('#irAtras').click(() => {
+    $.ajax({
+        type: 'POST',
+        url: 'irAtras.php',
+        success: (r) => {
+            let res = JSON.parse(r);
+            if (res) {
+                window.location.reload()
+            } else {
+                Swal.fire("Oops...", "No puedes ir mas atras.", "error")
+            }
+        }
+    });
 })
 
 // Abrir menu
 
 $('.object').mousedown((e) => {
+    $('#menu2').css('display', 'none');
     if (e.which == '3') {
         $('#menu').css('display', 'block')
         $('#menu').css('top', mouseY(e) + 'px')
         $('#menu').css('left', mouseX(e) + 'px')
         $('#menu input').val(e.currentTarget.id)
     }
+
 })
+
+$('#explorer').mousedown((e) => {
+    
+    if (e.target.id == "explorer") {
+        $('#menu').css('display', 'none');
+        if (e.which == '3') {
+            $('#menu2').css('display', 'block')
+            $('#menu2').css('top', mouseY(e) + 'px')
+            $('#menu2').css('left', mouseX(e) + 'px')
+        }
+    }
+})
+
 
 // cerrar menu al clickear fuera de él
 
-$(document).click(function (event) {
-    let visible = $('#menu').css('display')
-    let id = event.target.parentElement ? event.target.parentElement.id : event.target.id;
-    if (visible == "block" && id != "menu") {
+$(document).click(function (e) {
+    $('#menu').css('display', 'none')
+    $('#menu2').css('display', 'none')
+    
+    /* let id = 
+    if (visible == "block" && id != "menu" ) {
         $('#menu').css('display', 'none')
-    }
+    } */
 });
 
 // desactivar menu del DOM y dar mensaje de bienvenida una sola vez

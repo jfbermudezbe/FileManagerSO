@@ -2,9 +2,8 @@
 
 session_start();
 
-if (!isset($_GET['nameFolder'])) {
-    $_SESSION['error'] = "Ha ocurrido un error al navegar.";
-    header("Location: index.php");
+if (!isset($_POST['nameFolder'])) {
+    echo json_encode(false);
     return;
 }
 
@@ -14,14 +13,13 @@ if (isset($_SESSION['path'])) {
         $path = $path . '/' . $key;
     }
 }
-$result = chdir('./projectFolder' . $path . '/' . $_GET['nameFolder']);
+$result = chdir('./projectFolder' . $path . '/' . $_POST['nameFolder']);
 
 if ($result) {
-    array_push($_SESSION['path'], $_GET['nameFolder']);
-} /* else {
-    $_SESSION['error'] = "Ocurrió un error abriendo el directorio";
-} */
+    array_push($_SESSION['path'], $_POST['nameFolder']);
+    echo json_encode(true);
+} else {
+    echo json_encode(false);
+}
 
-header("Location: index.php");
-return;
 ?>

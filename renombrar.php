@@ -15,11 +15,12 @@ if (isset($_SESSION['path'])) {
 $oldPath = './projectFolder' . $path . '/' . $oldName;
 $newPath = './projectFolder' . $path . '/' . $newName;
 
-$result = rename($oldPath, $newPath);
-
-if ($result) {
-    echo json_encode(true);
+/* $result =  */
+exec('mv ' . $oldPath . ' ' .$newPath);
+echo json_encode(true);
+/* if ($result) {
+    
 } else {
     echo json_encode(false);
-}
+} */
 ?>
