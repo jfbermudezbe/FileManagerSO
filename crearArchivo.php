@@ -14,14 +14,17 @@ if (isset($_SESSION['path'])) {
         $path = $path . '/' . $key;
     }
 }
+$query = "touch ./projectFolder" . $path . '/' . $_GET['nombreArchivo'];
 
-$result = touch("./projectFolder" . $path . '/' . $_GET['nombreArchivo']);
-
-if($result){
-    $_SESSION['success'] = "El archivo se ha creado correctamente.";
-}else{
-    $_SESSION['error'] = "Ocurrió un error creando el archivo.";
+if(is_file("./projectFolder" . $path . '/' . $_GET['nombreArchivo'])){
+    $_SESSION['error'] = "Ya existe un archivo con este nombre y extensión.";
+    header( "Location: index.php" );
+    return;
 }
+
+exec($query);
+
+$_SESSION['success'] = "El archivo se ha creado correctamente.";
 
 header( "Location: index.php" );
 return;

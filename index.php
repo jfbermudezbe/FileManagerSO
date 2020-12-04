@@ -47,6 +47,7 @@ function sortedDir($dir)
 
     <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css?family=Poppins|Fredoka+One|Patua+One|Play|Righteous&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Reem+Kufi&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -69,7 +70,7 @@ function sortedDir($dir)
     </div>
 
     <div id="menu2" class="menu row m-0">
-        <div class="col-12 disabled" id="pegar">
+        <div class="col-12 <?php echo isset($_SESSION['copyPath']) ? '' : 'disabled'; ?>" id="pegar">
             <i class="fas fa-clipboard fa-fw"></i> Pegar
         </div>
         <hr>
@@ -82,46 +83,44 @@ function sortedDir($dir)
     </div>
 
     <!-- Navbar -->
-    <nav class="navbar nav-color">
-        <a class="navbar-brand r-font" href="/">
-            FileExSO
+    <nav class="navbar nav-color py-1">
+        <a class="navbar-brand r-font row m-0 align-items-center" href="/">
+            <img src="img/favicon.png" width="40" height="40" alt="">
+            <span style="vertical-align: middle;margin-left:5px;">FileExSO</span>
         </a>
-        <img src="img/favicon.png" width="40" height="40" class="d-inline-block align-top" alt="">
+
         <div class="row m-0">
             <button class="btn nav-btn" id="crearCarpeta">
                 <i class="fas fa-folder-plus fa-fw fa-2x"></i>
             </button>
-            <button class="btn nav-btn" id="crearArchivo">
+            <button class="btn nav-btn ml-1" id="crearArchivo">
                 <i class="fas fa-file-medical fa-fw fa-2x"></i>
             </button>
         </div>
     </nav>
 
     <!-- Navegacion entre directorios -->
-    <div class="mt-3 row m-0">
+    <div class="py-2 row m-0 h-100 url">
         <?php if (!empty($fakePath)) { ?>
-            <button class="btn nav-btn" id="irAtras" style="border-radius: 50px;">
-                <i class="fas fa-arrow-circle-left fa-fw fa-2x"></i>
+            <button class="btn back-btn" id="irAtras">
+                <i class="fas fa-arrow-left fa-fw fa-2x"></i>
             </button>
-            <div class="total-path row m-0">
-                <div class="current-path r-font">
-                    Home
+            <div class="total-path row m-0 align-items-center">
+                <div class="current-path k-font">
+                    <span style="vertical-align: middle;">Home</span>
                 </div>
-                <?php foreach ($fakePath as $key) {
-                    echo '
-            <div class="divider r-font">/</div>
-            <div class="current-path r-font">
-                ' . $key . '
-            </div>';
-                }; ?>
+                <?php foreach ($fakePath as $key) { ?>
+                    <div class="divider r-font"><i class="fas fa-chevron-right"></i></div>
+                    <div class="current-path k-font">
+                        <?php echo $key; ?>
+                    </div>
+                <?php } ?>
             </div>
         <?php } else { ?>
             <div class="current-path r-font text-center mx-auto">
                 Home
             </div>
-        <?php
-        } ?>
-
+        <?php } ?>
     </div>
 
     <!-- Navegador de archivos-->
@@ -135,7 +134,7 @@ function sortedDir($dir)
         ?>
                     <div class="object object-file col-6 col-sm-3 col-lg-2 row m-0" id="<?php echo $i ?>">
                         <i class="fas fa-file fa-fw col-12"></i>
-                        <p class="col-12 text-center"><?php echo $i ?></p>
+                        <p class="col-12 text-center k-font"><?php echo $i ?></p>
                         <input type="hidden" name="nameFile" value="<?php echo $i ?>">
                     </div>
                 <?php
@@ -143,7 +142,7 @@ function sortedDir($dir)
                 ?>
                     <div class="object object-folder col-6 col-sm-3 col-lg-2 row m-0" id="<?php echo $i ?>">
                         <i class="fas fa-folder fa-fw col-12"></i>
-                        <p class="col-12 text-center"><?php echo $i ?></p>
+                        <p class="col-12 text-center k-font"><?php echo $i ?></p>
                         <input type="hidden" name="nameFolder" value="<?php echo $i ?>">
                     </div>
             <?php
@@ -243,6 +242,35 @@ function sortedDir($dir)
                 showConfirmButton: false
             })
         })
+        $('#pegar').on('click', async function() {
+            <?php if (isset($_SESSION['copyPath'])) { ?>
+                await $.ajax({
+                    type: 'POST',
+                    url: 'pegar.php',
+                    success: (res) => {
+                        console.log('Pegado', res)
+                    }
+                })
+                window.location.reload()
+
+            <?php } else { ?>
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false,
+                    timer: 1000,
+                    timerProgressBar: false,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+                Toast.fire({
+                    icon: 'warning',
+                    title: `No hay nada para pegar.`
+                })
+            <?php } ?>
+        })
 
         $(document).ready(() => {
             console.log("<?php echo $currentPath; ?>")
@@ -261,8 +289,51 @@ function sortedDir($dir)
         <script>
             Swal.fire("Muy bien!", "<?php echo $_SESSION['success']; ?>", "success")
         </script>
-    <?php
+        <?php
         unset($_SESSION['success']);
+    } else if (isset($_SESSION['hasPasted'])) {
+        if ($_SESSION['hasPasted']) {
+        ?>
+            <script>
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false,
+                    timer: 1000,
+                    timerProgressBar: false,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+                Toast.fire({
+                    icon: 'success',
+                    title: `Pegado correctamente`
+                })
+            </script>
+        <?php
+        } else {
+        ?>
+            <script>
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: false,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+                Toast.fire({
+                    icon: 'error',
+                    title: `Este archivo ya existe`
+                })
+            </script>
+    <?php
+        }
+        unset($_SESSION['hasPasted']);
     } ?>
 </body>
 

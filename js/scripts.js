@@ -20,11 +20,23 @@ $('#eliminar').click(() => {
                     success: (r) => {
                         let res = JSON.parse(r);
                         if (res) {
-                            Swal.fire("Muy bien!.", "Se eliminó correctamente.", "success")
-                                .then((val) => {
-                                    if (val) window.location.reload()
-                                })
-
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: 'top',
+                                showConfirmButton: false,
+                                timer: 2000,
+                                timerProgressBar: false,
+                                didOpen: (toast) => {
+                                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                                }
+                            })
+                            Toast.fire({
+                                icon: 'success',
+                                title: `Se eliminó ${fileID}`
+                            }).then(() => {
+                                window.location.reload()
+                            })
                         } else {
                             Swal.fire("Oops...", "Hubo un error al eliminar.", "error")
                         }
@@ -68,7 +80,7 @@ $('#renombrar').click(() => {
                 icon: 'success'
             })
                 .then(() => {
-                    window.location.reload();
+                    ;
                 })
         }
         else {
@@ -81,6 +93,74 @@ $('#renombrar').click(() => {
     })
 })
 
+$('#copiar').on('click', async function () {
+    const fileID = $('#menu input').val()
+    const hasCuted = false
+
+    await $.ajax({
+        type: 'POST',
+        url: 'copiar.php',
+        data: { fileID, hasCuted },
+        success: (res) => {
+            console.log('Copiado', res)
+        }
+    })
+
+    $('#pegar').removeClass('disabled')
+
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top',
+        showConfirmButton: false,
+        timer: 1000,
+        timerProgressBar: false,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    })
+
+    await Toast.fire({
+        icon: 'success',
+        title: `${fileID} copiado`
+    })
+
+    window.location.reload()
+})
+
+$('#cortar').on('click', async function () {
+    const fileID = $('#menu input').val()
+    const hasCuted = true
+
+    await $.ajax({
+        type: 'POST',
+        url: 'copiar.php',
+        data: { fileID, hasCuted },
+        success: (res) => {
+            console.log('Cortado', res)
+        }
+    })
+
+    $('#pegar').removeClass('disabled')
+    $(`#${fileID}`).addClass('cuted')
+
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top',
+        showConfirmButton: false,
+        timer: 1000,
+        timerProgressBar: false,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    })
+
+    Toast.fire({
+        icon: 'success',
+        title: `${fileID} cortado`
+    })
+})
 
 // Navegación
 
@@ -130,7 +210,7 @@ $('.object').mousedown((e) => {
 })
 
 $('#explorer').mousedown((e) => {
-    
+
     if (e.target.id == "explorer") {
         $('#menu').css('display', 'none');
         if (e.which == '3') {
@@ -147,7 +227,7 @@ $('#explorer').mousedown((e) => {
 $(document).click(function (e) {
     $('#menu').css('display', 'none')
     $('#menu2').css('display', 'none')
-    
+
     /* let id = 
     if (visible == "block" && id != "menu" ) {
         $('#menu').css('display', 'none')
