@@ -2,17 +2,8 @@
 
 session_start();
 
-if (!isset($_POST['nameFolder'])) {
-    echo json_encode(false);
-    return;
-}
+exec("cut -d: -f1,3 /etc/passwd | egrep ':[0-9]{4}$' | cut -d: -f1", $output, $error);
 
-$path = '';
-if (isset($_SESSION['path'])) {
-    foreach ($_SESSION['path'] as $key) {
-        $path = $path . '/' . $key;
-    }
-}
-
+echo json_encode($output);
 
 ?>

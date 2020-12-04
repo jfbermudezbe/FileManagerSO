@@ -163,24 +163,22 @@ $('#cortar').on('click', async function () {
     })
 })
 
-$('#propiedades').click(() => {
+$('#propiedades').click(async () => {
     const fileID = $('#menu input').val()
     $('#menu').css('display', 'none')
 
-    /* const users =  */
-    $.ajax({
+    const users = await $.ajax({
         type: 'POST',
         url: 'usuarios.php',
         success: (res) => {
-            console.log(res)
-            //return res;
+            return JSON.parse(res);
         }
     });
 
     Swal.fire({
         width: '60rem',
         title: "Propiedades del elemento",
-        html: "Olakase",
+        html: '<div></div>',
         confirmButtonText: `Ok`
     })
 })
