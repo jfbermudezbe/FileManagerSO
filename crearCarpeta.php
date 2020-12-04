@@ -17,8 +17,10 @@ if(isset($_GET['nombreCarpeta'])){
         }
     }
 
-    if(!file_exists("./projectFolder" . $path . '/' . $_GET['nombreCarpeta'])){
-        exec("mkdir .\projectFolder" . $path . '/' . $_GET['nombreCarpeta']);//, 0777, true);
+    if(!is_dir("./projectFolder" . $path . '/' . $_GET['nombreCarpeta'])){
+        $query = "mkdir ./projectFolder" . $path . '/' . $_GET['nombreCarpeta'];
+        $query = str_replace( '/', '\\', $query ); // For windows
+        exec($query);
         $_SESSION['success'] = "La carpeta se ha creado correctamente.";
         header('Location: index.php');
         return;
@@ -33,3 +35,4 @@ if(isset($_GET['nombreCarpeta'])){
     header( "Location: index.php" );
     return;
 }
+?>

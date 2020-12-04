@@ -67,6 +67,10 @@ function sortedDir($dir)
         <div class="col-12" id="eliminar">
             <i class="fas fa-trash fa-fw"></i> Eliminar
         </div>
+        <hr>
+        <div class="col-12" id="propiedades">
+            <i class="fas fa-trash fa-fw"></i> Propiedades
+        </div>
     </div>
 
     <div id="menu2" class="menu row m-0">
@@ -156,7 +160,6 @@ function sortedDir($dir)
             </div>
         <?php
         }
-
         ?>
     </div>
 

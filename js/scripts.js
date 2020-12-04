@@ -18,14 +18,15 @@ $('#eliminar').click(() => {
                     url: 'eliminar.php',
                     data: { fileID },
                     success: (r) => {
-                        let res = JSON.parse(r);
-                        if (res) {
+                        console.log(r)
+                        //let res = JSON.parse(r);
+                        /* if (res) {
                             const Toast = Swal.mixin({
                                 toast: true,
                                 position: 'top',
                                 showConfirmButton: false,
                                 timer: 2000,
-                                timerProgressBar: false,
+                                timerProgressBar: true,
                                 didOpen: (toast) => {
                                     toast.addEventListener('mouseenter', Swal.stopTimer)
                                     toast.addEventListener('mouseleave', Swal.resumeTimer)
@@ -33,13 +34,13 @@ $('#eliminar').click(() => {
                             })
                             Toast.fire({
                                 icon: 'success',
-                                title: `Se eliminó ${fileID}`
+                                title: `Eliminando ${fileID}...`
                             }).then(() => {
                                 window.location.reload()
                             })
                         } else {
                             Swal.fire("Oops...", "Hubo un error al eliminar.", "error")
-                        }
+                        } */
                     }
                 });
             }
@@ -161,6 +162,29 @@ $('#cortar').on('click', async function () {
         title: `${fileID} cortado`
     })
 })
+
+$('#propiedades').click(() => {
+    const fileID = $('#menu input').val()
+    $('#menu').css('display', 'none')
+
+    /* const users =  */
+    $.ajax({
+        type: 'POST',
+        url: 'usuarios.php',
+        success: (res) => {
+            console.log(res)
+            //return res;
+        }
+    });
+
+    Swal.fire({
+        width: '60rem',
+        title: "Propiedades del elemento",
+        html: "Olakase",
+        confirmButtonText: `Ok`
+    })
+})
+
 
 // Navegación
 
