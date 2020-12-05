@@ -27,10 +27,6 @@ if ($_POST['action'] == 'propietarios') {
     //$users = ['juan', 'ciro', 'maria'];
 
     echo json_encode($users);
-} else if ($_POST['action'] == 'crear') {
-    exec('useradd -m ' . $_POST['userName'], $output, $error);
-
-    echo json_encode($error);
 } else {
     echo json_encode(false);
 }

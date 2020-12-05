@@ -18,9 +18,8 @@ $('#eliminar').click(() => {
                     url: 'eliminar.php',
                     data: { fileID },
                     success: (r) => {
-                        console.log(r)
-                        //let res = JSON.parse(r);
-                        /* if (res) {
+                        let res = JSON.parse(r);
+                        if (res) {
                             const Toast = Swal.mixin({
                                 toast: true,
                                 position: 'top',
@@ -40,7 +39,7 @@ $('#eliminar').click(() => {
                             })
                         } else {
                             Swal.fire("Oops...", "Hubo un error al eliminar.", "error")
-                        } */
+                        }
                     }
                 });
             }
@@ -283,64 +282,12 @@ $('#crearUsuario').click(async () => {
 
     const res = await Swal.fire({
         title: `Usuarios`,
-        input: 'text',
         html: props,
-        confirmButtonText: `Añadir`,
-        showCancelButton: true,
         customClass: {
             header: 'pb-3',
             content: 'p-0'
-        },
-        preConfirm: (newName) => {
-            return newName
         }
     })
-    if (res.isConfirmed) {
-        const res2 = await $.ajax({
-            type: 'POST',
-            url: 'usuarios.php',
-            data: { action: 'crear', userName: res.value },
-            success: (res) => {
-                return res;
-            }
-        })
-
-        if (res2 == 0) {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top',
-                timer: 3000,
-                timerProgressBar: false,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
-            })
-
-            await Toast.fire({
-                icon: 'success',
-                title: `Se creó el usuario ${res.value} correctamente`
-            })
-        }
-        else {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: 'top',
-                timer: 2000,
-                timerProgressBar: false,
-                didOpen: (toast) => {
-                    toast.addEventListener('mouseenter', Swal.stopTimer)
-                    toast.addEventListener('mouseleave', Swal.resumeTimer)
-                }
-            })
-
-            await Toast.fire({
-                icon: 'error',
-                title: `Ha ocurrido un error.`
-            })
-        }
-    }
-
 })
 
 // Navegación
