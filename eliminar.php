@@ -28,12 +28,9 @@ if (isset($_SESSION['path'])) {
         $path = $path . '/' . $key;
     }
 }
-$path = './projectFolder' . $path . '/' ;//. $_POST['fileID'];
+$path = './projectFolder' . $path . '/' . $_POST['fileID'];
 
-exec('ls ' . $path, $output, $error);
-
-echo json_encode($output);
-/* if (is_file($path)) {
+if (is_file($path)) {
     $result = unlink($path);
 
     if ($result) {
@@ -44,5 +41,5 @@ echo json_encode($output);
 } else {
     rrmdir($path);
     echo json_encode(true);
-} */
+}
 ?>

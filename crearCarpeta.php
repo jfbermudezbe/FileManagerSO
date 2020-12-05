@@ -19,7 +19,7 @@ if(isset($_GET['nombreCarpeta'])){
 
     if(!is_dir("./projectFolder" . $path . '/' . $_GET['nombreCarpeta'])){
         $query = "mkdir ./projectFolder" . $path . '/' . $_GET['nombreCarpeta'];
-        $query = str_replace( '/', '\\', $query ); // For windows
+        //$query = str_replace( '/', '\\', $query ); // For windows
         exec($query);
         $_SESSION['success'] = "La carpeta se ha creado correctamente.";
         header('Location: index.php');
