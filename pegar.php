@@ -30,12 +30,13 @@ if (file_exists($path . '/' . $popedElement)) {
 $cuted = $_SESSION['hasCuted'] == "true" ? true : false;
 
 if ($cuted) {
-    $query = 'mv ' . $copyPath . '/' . $popedElement . ' ' . $path;
+    $query = 'sudo mv ' . $copyPath . '/' . $popedElement . ' ' . $path;
     exec($query);
     unset($_SESSION['copyPath']);
+    unset($_SESSION['hasCuted']);
     echo json_encode('cortado');
 } else {
-    $query = 'cp -dPr ' . $copyPath . '/' . $popedElement . ' ' . $path;
+    $query = 'sudo cp -dPr ' . $copyPath . '/' . $popedElement . ' ' . $path;
     exec($query);
     echo json_encode('copiado');
 }

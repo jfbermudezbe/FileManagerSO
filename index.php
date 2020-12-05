@@ -103,7 +103,7 @@ function sortedDir($dir)
             <button class="btn nav-btn ml-1" id="crearUsuario">
                 <i class="fas fa-user fa-fw fa-2x"></i>
             </button>
-    	    <button class="btn nav-btn ml-1" id="reload">
+            <button class="btn nav-btn ml-1" id="reload">
                 <i class="fas fa-redo fa-fw fa-2x"></i>
             </button>
         </div>
@@ -286,9 +286,9 @@ function sortedDir($dir)
             $('#explorer').addClass('show')
         })
 
-	$('#reload').click(()=>{
-		window.location.reload()
-	})
+        $('#reload').click(() => {
+            window.location.reload()
+        })
     </script>
 
 

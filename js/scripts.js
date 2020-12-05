@@ -73,14 +73,14 @@ $('#renombrar').click(() => {
             });
         }
     }).then((result) => {
-        console.log(result)
-        if (result.value == true) {
+
+        if (result.value == "true") {
             Swal.fire({
                 title: 'Renombrado correctamente.',
                 icon: 'success'
             })
                 .then(() => {
-                    ;
+                    window.location.reload();
                 })
         }
         else {
@@ -89,6 +89,9 @@ $('#renombrar').click(() => {
                 text: 'Ocurrió un error inesperado.',
                 icon: 'error'
             })
+                .then(() => {
+                    window.location.reload();
+                })
         }
     })
 })
@@ -345,25 +348,6 @@ $('#explorer').mousedown((e) => {
             $('#menu2').css('top', mouseY(e) + 'px')
             $('#menu2').css('left', mouseX(e) + 'px')
         }
-    }
-})
-
-// Abrir menu movil
-
-$('.object').taphold((e) => {
-    $('#menu2').css('display', 'none');
-    $('#menu').css('display', 'block')
-    $('#menu').css('top', mouseY(e) + 'px')
-    $('#menu').css('left', mouseX(e) + 'px')
-    $('#menu input').val(e.currentTarget.id)
-})
-
-$('#explorer').taphold((e) => {
-    if (e.target.id == "explorer") {
-        $('#menu').css('display', 'none');
-        $('#menu2').css('display', 'block')
-        $('#menu2').css('top', mouseY(e) + 'px')
-        $('#menu2').css('left', mouseX(e) + 'px')
     }
 })
 

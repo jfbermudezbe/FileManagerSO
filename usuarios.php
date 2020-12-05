@@ -18,13 +18,9 @@ if ($_POST['action'] == 'propietarios') {
 
     exec("cut -d: -f1,3 /etc/passwd | egrep ':[0-9]{4}$' | cut -d: -f1", $users, $error);
 
-    //$users = ['juan', 'ciro', 'maria'];
-
     echo json_encode(['users' => $users, 'owner' => $owner, 'fileSize' => $size, 'date' => $date]);
 } else if ($_POST['action'] == 'todos') {
     exec("cut -d: -f1,3 /etc/passwd | egrep ':[0-9]{4}$' | cut -d: -f1", $users, $error);
-
-    //$users = ['juan', 'ciro', 'maria'];
 
     echo json_encode($users);
 } else {
