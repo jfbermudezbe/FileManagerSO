@@ -1,6 +1,6 @@
 <?php
 
-function rrmdir($dir)
+/* function rrmdir($dir)
 {
     if (is_dir($dir)) {
         $objects = scandir($dir);
@@ -18,7 +18,7 @@ function rrmdir($dir)
         reset($objects);
         rmdir($dir);
     }
-}
+} */
 
 session_start();
 
@@ -31,15 +31,21 @@ if (isset($_SESSION['path'])) {
 $path = './projectFolder' . $path . '/' . $_POST['fileID'];
 
 if (is_file($path)) {
-    $result = unlink($path);
+    //$result = unlink($path);
+    exec('sudo rm ' . $path, $result, $error);
 
-    if ($result) {
+    if ($error == 0) {
         echo json_encode(true);
     } else {
         echo json_encode(false);
     }
 } else {
-    rrmdir($path);
-    echo json_encode(true);
+    //rrmdir($path);
+    exec('sudo rm -rf ' . $path, $result, $error);
+    if ($error == 0) {
+        echo json_encode(true);
+    } else {
+        echo json_encode(false);
+    }
 }
 ?>

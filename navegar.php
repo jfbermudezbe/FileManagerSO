@@ -13,9 +13,11 @@ if (isset($_SESSION['path'])) {
         $path = $path . '/' . $key;
     }    
 }
-$result = chdir('./projectFolder' . $path . '/' . $_POST['nameFolder']);
 
-if ($result) {
+$query = 'cd ./projectFolder' . $path . '/' . $_POST['nameFolder'];
+exec($query, $result, $error);
+
+if ($error == 0) {
     array_push($_SESSION['path'], $_POST['nameFolder']);
     echo json_encode(true);
 } else {
