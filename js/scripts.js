@@ -299,7 +299,7 @@ $('.object.object-folder').click((e) => {
         data: { nameFolder },
         url: 'navegar.php',
         success: (r) => {
-            if (r == "true"){
+            if (r == "true") {
                 window.location.reload()
             } else {
                 Swal.fire("Oops...", "A ocurrido un error inesperado.", "error")
@@ -323,7 +323,7 @@ $('#irAtras').click(() => {
     });
 })
 
-// Abrir menu
+// Abrir menu PC
 
 $('.object').mousedown((e) => {
     $('#menu2').css('display', 'none');
@@ -348,6 +348,24 @@ $('#explorer').mousedown((e) => {
     }
 })
 
+// Abrir menu movil
+
+$('.object').taphold((e) => {
+    $('#menu2').css('display', 'none');
+    $('#menu').css('display', 'block')
+    $('#menu').css('top', mouseY(e) + 'px')
+    $('#menu').css('left', mouseX(e) + 'px')
+    $('#menu input').val(e.currentTarget.id)
+})
+
+$('#explorer').taphold((e) => {
+    if (e.target.id == "explorer") {
+        $('#menu').css('display', 'none');
+        $('#menu2').css('display', 'block')
+        $('#menu2').css('top', mouseY(e) + 'px')
+        $('#menu2').css('left', mouseX(e) + 'px')
+    }
+})
 
 // cerrar menu al clickear fuera de él
 
