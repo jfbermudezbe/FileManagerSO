@@ -71,6 +71,9 @@ function sortedDir($dir)
         <div class="col-12" id="propiedades">
             <i class="fas fa-sliders-h fa-fw"></i> Propiedades
         </div>
+        <div class="col-12" id="cambiar_permisos">
+            <i class="fas fa-unlock-alt fa-fw"></i> Permisos
+        </div>
     </div>
 
     <div id="menu2" class="menu row m-0">

@@ -1,3 +1,158 @@
+// Permisos
+
+$('#cambiar_permisos').on('click', async () => {
+    const fileID = $('#menu input').val()
+
+    const res = await $.ajax({
+        type: 'POST',
+        url: 'cambiarPermiso.php',
+        data: { action: 'get', fileID },
+        success: (res) => {
+            return JSON.parse(res)
+        }
+    });
+
+    const u = res[1]
+    const g = res[2]
+    const o = res[3]
+
+    const opciones = [0, 1, 2, 3, 4, 5, 6, 7]
+
+    let html = `
+    <br>
+    <div class="row select-permissions">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="mr-sm-2">Usuario</label>
+                <select class="custom-select mr-sm-2 permiso_usuario">`
+    opciones.forEach(i => {
+        html += `<option ${u == i ? 'selected' : ''} value="${i}">${i}</option>`
+    })
+    html += `
+                </select>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="mr-sm-2">Grupo</label>
+                <select class="custom-select mr-sm-2 permiso_grupo">`
+    opciones.forEach(i => {
+        html += `<option ${g == i ? 'selected' : ''} value="${i}">${i}</option>`
+    })
+    html += `</select>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="mr-sm-2">Otros</label>
+                <select class="custom-select mr-sm-2 permiso_otros">`
+    opciones.forEach(i => {
+        html += `<option ${o == i ? 'selected' : ''} value="${i}">${i}</option>`
+    })
+    html += `
+                </select>
+            </div>
+        </div>
+    </div>
+    <small id='cambiarPermisoComment' class='form-text text-muted'>
+        <br>
+        <div class="container">
+            <table class="table">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Código</th>
+                        <th scope="col">Descripción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">7</th>
+                        <td>Lectura, escritura y ejecución</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">6</th>
+                        <td>Lectura y escritura</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">5</th>
+                        <td>Lectura y ejecución</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">4</th>
+                        <td>Lectura</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">3</th>
+                        <td>Escritura y ejecución</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">2</th>
+                        <td>Escritura</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>Ejecución</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">0</th>
+                        <td>Sin permisos</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </small>
+    <br>`
+
+    const res2 = await Swal.fire({
+        title: "Ingrese el código del permiso",
+        html: html,
+        showCancelButton: true,
+        showConfirmButton: true
+    })
+
+    if (res2.isDenied || res2.isDismissed) return
+
+    const nuevoU = $('.select-permissions .permiso_usuario').val()
+    const nuevoG = $('.select-permissions .permiso_grupo').val()
+    const nuevoO = $('.select-permissions .permiso_otros').val()
+
+    const nuevoP = nuevoU + '' + nuevoG + '' + nuevoO
+
+    const res3 = await $.ajax({
+        type: 'POST',
+        url: 'cambiarPermiso.php',
+        data: { action: 'set', fileID, nuevoP },
+        success: (res) => {
+            return res
+        }
+    })
+
+    if (res3 == 0) {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+
+        await Toast.fire({
+            icon: 'success',
+            title: `Cambiando permisos de ${fileID}...`,
+            allowOutsideClick: false
+        })
+
+        window.location.reload()
+
+    } else {
+        Swal.fire("Oops...", "Hubo un error.", "error")
+    }
+})
+
 // Funciones especiales
 
 $('#eliminar').click(() => {
@@ -33,7 +188,8 @@ $('#eliminar').click(() => {
                             })
                             Toast.fire({
                                 icon: 'success',
-                                title: `Eliminando ${fileID}...`
+                                title: `Eliminando ${fileID}...`,
+                                allowOutsideClick: false
                             }).then(() => {
                                 window.location.reload()
                             })
