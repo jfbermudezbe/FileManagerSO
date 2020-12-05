@@ -24,7 +24,7 @@ if(is_file("./projectFolder" . $path . '/' . $_GET['nombreArchivo'])){
 
 exec($query);
 
-$_SESSION['success'] = "El archivo se ha creado correctamente.";
+$_SESSION['success'] ="El archivo se ha creado correctamente.";
 
 header( "Location: index.php" );
 return;

@@ -299,9 +299,9 @@ $('.object.object-folder').click((e) => {
         data: { nameFolder },
         url: 'navegar.php',
         success: (r) => {
-            let res = JSON.parse(r);
-            if (res) {
-                window.location.reload()
+            if (r == "true") {
+		console.log(r)
+               // window.location.reload()
             } else {
                 Swal.fire("Oops...", "A ocurrido un error inesperado.", "error")
             }

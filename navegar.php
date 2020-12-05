@@ -11,7 +11,7 @@ $path = '';
 if (isset($_SESSION['path'])) {
     foreach ($_SESSION['path'] as $key) {
         $path = $path . '/' . $key;
-    }
+    }    
 }
 $result = chdir('./projectFolder' . $path . '/' . $_POST['nameFolder']);
 
