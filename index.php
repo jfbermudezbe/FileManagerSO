@@ -92,8 +92,8 @@ function sortedDir($dir)
             <img src="img/favicon.png" width="40" height="40" alt="">
             <span style="vertical-align: middle;margin-left:5px;">FileExSO</span>
         </a>
-
         <div class="row m-0">
+
             <button class="btn nav-btn" id="crearCarpeta">
                 <i class="fas fa-folder-plus fa-fw fa-2x"></i>
             </button>
@@ -101,7 +101,10 @@ function sortedDir($dir)
                 <i class="fas fa-file-medical fa-fw fa-2x"></i>
             </button>
             <button class="btn nav-btn ml-1" id="crearUsuario">
-                <i class="fas fa-user-plus fa-fw fa-2x"></i>
+                <i class="fas fa-user fa-fw fa-2x"></i>
+            </button>
+    	    <button class="btn nav-btn ml-1" id="reload">
+                <i class="fas fa-redo fa-fw fa-2x"></i>
             </button>
         </div>
     </nav>
@@ -282,6 +285,10 @@ function sortedDir($dir)
             console.log("<?php echo $currentPath; ?>")
             $('#explorer').addClass('show')
         })
+
+	$('#reload').click(()=>{
+		window.location.reload()
+	})
     </script>
 
 
