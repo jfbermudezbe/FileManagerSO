@@ -10,7 +10,7 @@ if (isset($_SESSION['path'])) {
 }
 $path = './projectFolder' . $path . '/' . $_POST['fileID'];
 
-exec('sudo chown ' . $_POST['propietario'] . ' ' . $path, $output, $error);
+exec('sudo chown ' . $_POST['propietario'] . ' ' . $path . ' -R', $output, $error);
 
 echo json_encode($error);
 
