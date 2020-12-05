@@ -167,22 +167,181 @@ $('#propiedades').click(async () => {
     const fileID = $('#menu input').val()
     $('#menu').css('display', 'none')
 
-    const users = await $.ajax({
+    const fileData = JSON.parse(await $.ajax({
         type: 'POST',
         url: 'usuarios.php',
+        data: { fileID, action: 'propietarios' },
         success: (res) => {
-            return JSON.parse(res);
+            return res;
         }
-    });
+    }));
 
-    Swal.fire({
-        width: '60rem',
-        title: "Propiedades del elemento",
-        html: '<div></div>',
-        confirmButtonText: `Ok`
+    const modifiedDate = fileData.date[0].split(' ');
+
+    let props = `
+    <div class="row m-0">
+        <p class="col-6 m-0">Propietario</p>
+        <p class="col-6">${fileData.owner[0]}</p>
+        <p class="col-6 m-0">Cambiar propietario</p>
+        <div class="form-group col-6 m-0 select-users">
+            <select class="form-control custom-select">
+                <option selected value="-1">No cambiar</option>
+            `
+    fileData.users.forEach(user => {
+        props += `<option value="${user}">${user}</option>`
     })
+
+    props += `
+            </select>
+        </div>
+        <hr class="col-11">
+        <p class="col-6 m-0">Peso</p>
+        <p class="col-6 m-0">${fileData.fileSize[0]} bytes</p>
+        <hr class="col-11">
+        <p class="col-6 m-0">Fecha de modificación (Año/Mes/Día)</p>
+        <p class="col-6 m-0">${modifiedDate[0]}</p>
+    </div>`
+
+    await Swal.fire({
+        width: '40rem',
+        title: `Propiedades de ${fileID}`,
+        html: props,
+        confirmButtonText: `Ok`,
+        customClass: {
+            header: 'pb-3',
+            content: 'p-0'
+        }
+    })
+
+    const propietario = $('.select-users .custom-select').val()
+
+    if (propietario == "-1") return
+
+    const res = await $.ajax({
+        type: 'POST',
+        url: 'cambiarPropietario.php',
+        data: { fileID, propietario },
+        success: (res) => {
+            return res
+        }
+    })
+
+    if (res == 0) {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top',
+            timer: 5000,
+            timerProgressBar: false,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+
+        await Toast.fire({
+            icon: 'success',
+            title: `Se cambió el propietario de ${fileID} al usuario ${propietario}`
+        })
+    }
+    else {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top',
+            timer: 2000,
+            timerProgressBar: false,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        })
+
+        await Toast.fire({
+            icon: 'error',
+            title: `Ha ocurrido un error.`
+        })
+    }
 })
 
+$('#crearUsuario').click(async () => {
+    const users = JSON.parse(await $.ajax({
+        type: 'POST',
+        url: 'usuarios.php',
+        data: { action: 'todos' },
+        success: (res) => {
+            return res;
+        }
+    }))
+
+    let props = `<div class="row m-0">`
+
+    users.forEach(user => {
+        props += `<div class="col-12 py-2">${user}</div>`
+    })
+
+    props += `
+    </div>`
+
+    const res = await Swal.fire({
+        title: `Usuarios`,
+        input: 'text',
+        html: props,
+        confirmButtonText: `Añadir`,
+        showCancelButton: true,
+        customClass: {
+            header: 'pb-3',
+            content: 'p-0'
+        },
+        preConfirm: (newName) => {
+            return newName
+        }
+    })
+    if (res.isConfirmed) {
+        const res2 = await $.ajax({
+            type: 'POST',
+            url: 'usuarios.php',
+            data: { action: 'crear', userName: res.value },
+            success: (res) => {
+                return res;
+            }
+        })
+
+        if (res2 == 0) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                timer: 3000,
+                timerProgressBar: false,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+
+            await Toast.fire({
+                icon: 'success',
+                title: `Se creó el usuario ${res.value} correctamente`
+            })
+        }
+        else {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top',
+                timer: 2000,
+                timerProgressBar: false,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            })
+
+            await Toast.fire({
+                icon: 'error',
+                title: `Ha ocurrido un error.`
+            })
+        }
+    }
+
+})
 
 // Navegación
 

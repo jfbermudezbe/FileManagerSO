@@ -50,14 +50,26 @@ i::before {
     border-radius: 50%;
     width: 45px;
     height: 45px;
-    font-size: 15px;
 }
 
 .nav-btn:hover {
     background-color: #eeeeee99;
 }
 
+.fa-user-plus{
+    font-size: 25px !important;
+}
+
 /* File manager */
+
+#explorer {
+    opacity: .75;
+}
+
+.show {
+    opacity: 1 !important;
+    transition: .2s ease-in;
+}
 
 .back-btn {
     padding: 0;

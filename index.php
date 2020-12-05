@@ -69,7 +69,7 @@ function sortedDir($dir)
         </div>
         <hr>
         <div class="col-12" id="propiedades">
-            <i class="fas fa-trash fa-fw"></i> Propiedades
+            <i class="fas fa-sliders-h fa-fw"></i> Propiedades
         </div>
     </div>
 
@@ -99,6 +99,9 @@ function sortedDir($dir)
             </button>
             <button class="btn nav-btn ml-1" id="crearArchivo">
                 <i class="fas fa-file-medical fa-fw fa-2x"></i>
+            </button>
+            <button class="btn nav-btn ml-1" id="crearUsuario">
+                <i class="fas fa-user-plus fa-fw fa-2x"></i>
             </button>
         </div>
     </nav>
@@ -277,6 +280,7 @@ function sortedDir($dir)
 
         $(document).ready(() => {
             console.log("<?php echo $currentPath; ?>")
+            $('#explorer').addClass('show')
         })
     </script>
 
